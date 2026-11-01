@@ -6,7 +6,7 @@
  * Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V4
  */
 :root {
-  /* paper & ink — tinted to the kraft anchor, never pure */
+  /* paper & ink - tinted to the kraft anchor, never pure */
   --color-paper: oklch(96.5% 0.010 82);
   --color-paper-2: oklch(93.6% 0.016 78);
   --color-linen: oklch(90.8% 0.019 75);
@@ -14,7 +14,7 @@
   --color-ink-muted: oklch(48% 0.020 76);
   --color-rule: oklch(84% 0.020 75);
 
-  /* brand — taken from the Flower Cup reference */
+  /* brand - taken from the Flower Cup reference */
   --color-forest: oklch(35.2% 0.052 153);
   --color-forest-deep: oklch(29% 0.045 153);
   --color-sage: oklch(53.4% 0.056 132);

@@ -7,7 +7,7 @@ const props = defineProps({
   label: { type: String, default: '' },
 })
 
-// Композиции растений в окошке пакетика; stem: true — тянуть стебель от земли
+// Композиции растений в окошке пакетика; stem: true - тянуть стебель от земли
 const compositions = {
   basil: [
     { type: 'basil', x: 62, y: 134, s: 1.1, r: -22 },

@@ -64,7 +64,7 @@ const analogs = computed(() => bouquets.filter((b) => b.slug !== props.slug))
             <button class="btn" type="button" :data-state="inOrder ? 'success' : null" @click="addToOrder">
               {{ inOrder ? 'В заказе' : 'Заказать этот букет' }}
             </button>
-            <RouterLink v-if="inOrder" class="link" :to="{ hash: '#contacts' }">Перейти к оформлению</RouterLink>
+            <a v-if="inOrder" class="link" :href="order.telegramUrl.value" target="_blank" rel="noopener">Оформить в Telegram</a>
           </div>
         </div>
 
