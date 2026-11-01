@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 
-// ——— цвета берём из CSS-токенов, чтобы 3D и вёрстка жили в одной палитре ———
+// --- цвета берём из CSS-токенов, чтобы 3D и вёрстка жили в одной палитре ---
 const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true })
 function tokenColor(name) {
   const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
@@ -21,7 +21,7 @@ const smooth = (a, b, x) => {
 const CUP_H = 2.1
 const GROUND = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
 
-// ——— текстура крафта: волокна + штамп + рукописная подпись ———
+// --- текстура крафта: волокна + штамп + рукописная подпись ---
 function kraftTexture() {
   const c = document.createElement('canvas')
   // пропорции ≈ длина окружности / высота стенки, чтобы штамп не растягивался
@@ -47,7 +47,7 @@ function kraftTexture() {
   }
   g.globalAlpha = 1
 
-  // лицевая сторона — центр текстуры (u = 0.5)
+  // лицевая сторона - центр текстуры (u = 0.5)
   const cx = c.width / 2
   const cy = c.height * 0.54
   const ink = cssColor('--color-forest')
@@ -95,7 +95,7 @@ function kraftTexture() {
   return tex
 }
 
-// ——— геометрии ———
+// --- геометрии ---
 function petalGeometry(length, width, lift = 0.12) {
   const geo = new THREE.SphereGeometry(1, 10, 6)
   geo.scale(width, 0.018, length)
@@ -132,18 +132,18 @@ function leafGeometry(len) {
   return geo
 }
 
-// ——— сцена ———
-export async function createCupScene(canvas, { reducedMotion = false } = {}) {
+// --- сцена ---
+export async function createCupScene(canvas, { reducedMotion = false, lowPower = false } = {}) {
   await Promise.all([
     document.fonts.load('500 92px "Cormorant Garamond"', 'Flower Cup'),
     document.fonts.load('62px "Marck Script"', 'посади меня'),
   ]).catch(() => {})
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowPower ? 1.75 : 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.shadowMap.enabled = true
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  renderer.shadowMap.type = THREE.PCFShadowMap
   renderer.localClippingEnabled = true
 
   const scene = new THREE.Scene()
@@ -171,7 +171,7 @@ export async function createCupScene(canvas, { reducedMotion = false } = {}) {
   const key = new THREE.DirectionalLight(C.peach, 2.6)
   key.position.set(4.5, 9, 6)
   key.castShadow = true
-  key.shadow.mapSize.set(2048, 2048)
+  key.shadow.mapSize.setScalar(lowPower ? 1024 : 2048)
   key.shadow.camera.left = -4
   key.shadow.camera.right = 4
   key.shadow.camera.top = 6
@@ -223,12 +223,12 @@ export async function createCupScene(canvas, { reducedMotion = false } = {}) {
     clippingPlanes: [GROUND],
   })
   const wallGeo = new THREE.LatheGeometry(profile, 96)
-  // UV по высоте, а не по индексу точки профиля — иначе текстура сжимается
+  // UV по высоте, а не по индексу точки профиля - иначе текстура сжимается
   const wp = wallGeo.attributes.position
   const wuv = wallGeo.attributes.uv
   for (let i = 0; i < wp.count; i++) wuv.setY(i, wp.getY(i) / CUP_H)
   const wall = new THREE.Mesh(wallGeo, wallMat)
-  wall.rotation.y = Math.PI // лицевая сторона текстуры — к зрителю
+  wall.rotation.y = Math.PI // лицевая сторона текстуры - к зрителю
   wall.castShadow = true
   wall.receiveShadow = true
   cup.add(wall)
@@ -251,7 +251,7 @@ export async function createCupScene(canvas, { reducedMotion = false } = {}) {
   soilTop.scale.setScalar(0.001)
   cup.add(soilTop)
 
-  // ——— букет ———
+  // --- букет ---
   const bouquet = new THREE.Group()
   cup.add(bouquet)
   const M = {
@@ -397,7 +397,7 @@ export async function createCupScene(canvas, { reducedMotion = false } = {}) {
   addFlower('cornflower', -0.7, 3.95, 0.25)
   addFlower('cornflower', 1.1, 3.75, 0.1)
 
-  // ——— росток ———
+  // --- росток ---
   const sprout = new THREE.Group()
   sprout.position.y = CUP_H - 0.12
   sprout.scale.setScalar(0.001)
@@ -423,7 +423,7 @@ export async function createCupScene(canvas, { reducedMotion = false } = {}) {
   trueLeaf.castShadow = true
   sprout.add(trueLeaf)
 
-  // ——— взаимодействие: вращение мышью с инерцией ———
+  // --- взаимодействие: вращение мышью с инерцией ---
   let dragging = false
   let lastX = 0
   let lastY = 0
@@ -468,7 +468,7 @@ export async function createCupScene(canvas, { reducedMotion = false } = {}) {
   canvas.addEventListener('pointercancel', onUp)
   canvas.addEventListener('keydown', onKey)
 
-  // ——— посадка ———
+  // --- посадка ---
   let progress = 0
   let target = 0
   const plantDuration = reducedMotion ? 0.6 : 3.2
@@ -496,12 +496,19 @@ export async function createCupScene(canvas, { reducedMotion = false } = {}) {
     sprout.rotation.y = grow * 0.6
   }
 
-  // ——— камера и размер ———
+  let lastFrame = 0
+  let elapsed = 0
+  let running = false
+  let raf = 0
+
+  // --- камера и размер ---
   const lookAt = new THREE.Vector3()
   function frameCamera(p) {
     const sink = smooth(0.28, 0.7, p)
-    lookAt.set(0, 2.05 - sink * 1.1, 0)
-    camera.position.set(0, 4.5 - sink * 1.5, 13.2 - sink * 2.6)
+    // на вертикальном экране снизу кнопки - поднимаем сцену в кадре и отъезжаем
+    const portrait = camera.aspect < 0.95 ? 1 : 0
+    lookAt.set(0, 2.05 - sink * 1.1 - portrait * 0.55, 0)
+    camera.position.set(0, 4.5 - sink * 1.5 - portrait * 0.5, 13.2 - sink * 2.6 + portrait * 3.4)
     camera.lookAt(lookAt)
   }
 
@@ -511,20 +518,24 @@ export async function createCupScene(canvas, { reducedMotion = false } = {}) {
     renderer.setSize(w, h, false)
     camera.aspect = w / h
     camera.updateProjectionMatrix()
+    if (!running) {
+      frameCamera(progress)
+      renderer.render(scene, camera)
+    }
   }
   const ro = new ResizeObserver(resize)
   ro.observe(canvas.parentElement)
   resize()
 
-  // ——— цикл: только когда видно ———
-  const clock = new THREE.Clock()
-  let running = false
-  let raf = 0
+  // --- цикл: только когда видно ---
 
   function tick() {
     raf = requestAnimationFrame(tick)
-    const dt = Math.min(clock.getDelta(), 0.05)
-    const t = clock.elapsedTime
+    const now = performance.now()
+    const dt = Math.min((now - lastFrame) / 1000, 0.05)
+    lastFrame = now
+    elapsed += dt
+    const t = elapsed
 
     if (!dragging) {
       idleFor += dt
@@ -556,7 +567,7 @@ export async function createCupScene(canvas, { reducedMotion = false } = {}) {
   const start = () => {
     if (running) return
     running = true
-    clock.getDelta()
+    lastFrame = performance.now()
     tick()
   }
   const stop = () => {

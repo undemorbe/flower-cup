@@ -1,13 +1,16 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router'
 import { useOrder } from '../composables/useOrder.js'
 import { formatPrice } from '../data/catalog.js'
 
-const { state, bouquet, seed } = useOrder()
+const { state, bouquet, seed, telegramUrl } = useOrder()
 const footerVisible = ref(false)
+const heroVisible = ref(false)
 const undo = ref(null) // снимок заказа для «Вернуть»
 let undoTimer = 0
 let io
+const route = useRoute()
 
 function remove() {
   undo.value = { bouquet: state.bouquet, seed: state.seed }
@@ -22,11 +25,26 @@ function restore() {
   undo.value = null
 }
 
+// Прячем панель над первым экраном (там кнопки 3D-сцены) и над контактами
 onMounted(() => {
+  io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.target.id === 'contacts') footerVisible.value = e.isIntersecting
+      else heroVisible.value = e.isIntersecting
+    }
+  })
   const footer = document.getElementById('contacts')
-  if (!footer) return
-  io = new IntersectionObserver(([e]) => (footerVisible.value = e.isIntersecting))
-  io.observe(footer)
+  if (footer) io.observe(footer)
+  watch(
+    () => route.name,
+    async () => {
+      await nextTick()
+      const hero = document.getElementById('top')
+      heroVisible.value = false
+      if (hero) io.observe(hero)
+    },
+    { immediate: true },
+  )
 })
 onBeforeUnmount(() => {
   io?.disconnect()
@@ -36,7 +54,7 @@ onBeforeUnmount(() => {
 
 <template>
   <Transition name="bar">
-    <aside v-if="(bouquet || undo) && !footerVisible" class="bar" aria-live="polite">
+    <aside v-if="(bouquet || undo) && !footerVisible && !heroVisible" class="bar" aria-live="polite">
       <template v-if="bouquet">
         <p class="bar__what">
           <span class="bar__label">В стаканчике:</span>
@@ -44,7 +62,7 @@ onBeforeUnmount(() => {
           <span class="num"> · {{ formatPrice(bouquet.price) }}</span>
         </p>
         <button class="bar__remove" type="button" @click="remove">Убрать</button>
-        <RouterLink class="btn btn--light" :to="{ hash: '#contacts' }">Оформить</RouterLink>
+        <a class="btn btn--light" :href="telegramUrl" target="_blank" rel="noopener">Оформить</a>
       </template>
       <template v-else>
         <p class="bar__what">Заказ убран.</p>

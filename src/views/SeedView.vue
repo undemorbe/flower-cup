@@ -13,7 +13,7 @@ const order = useOrder()
 const seed = computed(() => findSeed(props.slug))
 watch(seed, (s) => !s && router.replace({ name: 'home', hash: '#seeds' }), { immediate: true })
 
-// Если букет уже выбран — кладём семечко в него, иначе предлагаем выбрать
+// Если букет уже выбран - кладём семечко в него, иначе предлагаем выбрать
 const chosenBouquet = ref(order.state.bouquet)
 const bouquetOptions = bouquets.map((b) => ({ value: b.slug, label: b.name, hint: formatPrice(b.price) }))
 
@@ -64,7 +64,7 @@ const others = computed(() => seeds.filter((s) => s.slug !== props.slug))
               {{ added ? 'Добавлено в букет' : 'Добавить в букет' }}
             </button>
             <span v-if="!chosenBouquet" class="buy__done">Сначала выберите букет</span>
-            <RouterLink v-else-if="added" class="link" :to="{ hash: '#contacts' }">Перейти к оформлению</RouterLink>
+            <a v-else-if="added" class="link" :href="order.telegramUrl.value" target="_blank" rel="noopener">Оформить в Telegram</a>
           </div>
         </div>
 

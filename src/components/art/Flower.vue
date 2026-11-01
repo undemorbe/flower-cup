@@ -1,5 +1,5 @@
 <script setup>
-// Один цветок/лист в локальных координатах: (0,0) — точка, куда приходит стебель.
+// Один цветок/лист в локальных координатах: (0,0) - точка, куда приходит стебель.
 const props = defineProps({
   type: { type: String, required: true },
   x: { type: Number, default: 0 },

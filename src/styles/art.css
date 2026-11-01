@@ -1,4 +1,4 @@
-/* Палитра SVG-иллюстраций — только через токены */
+/* Палитра SVG-иллюстраций - только через токены */
 .a-petal { fill: var(--color-petal); stroke: var(--color-rule); stroke-width: 0.5; }
 .a-pollen { fill: var(--color-pollen); }
 .a-pollen-dark { fill: var(--color-kraft-dark); }

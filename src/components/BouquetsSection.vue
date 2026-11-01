@@ -9,7 +9,7 @@ const variantFor = (i) => (i === 0 ? 'feature' : i === 3 ? 'wide' : 'default')
   <section id="bouquets" class="bouquets wrap" aria-labelledby="bouquets-title">
     <header class="bouquets__head">
       <h2 id="bouquets-title" v-reveal>Наши букеты</h2>
-      <p v-reveal="80">Каждый — в стаканчике с семечком на дне. Какое семечко положить, выбираете вы.</p>
+      <p v-reveal="80">Каждый - в стаканчике с семечком на дне. Какое семечко положить, выбираете вы.</p>
     </header>
 
     <ul class="bouquets__grid">

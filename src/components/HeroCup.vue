@@ -4,9 +4,8 @@ import BouquetArt from './art/BouquetArt.vue'
 import { useMedia } from '../composables/useMedia.js'
 import { findBouquet } from '../data/catalog.js'
 
-// 3D только для ноутбуков/десктопов: широкий экран и точный указатель
-const isDesktop = useMedia('(min-width: 64rem) and (pointer: fine)')
-const reducedMotion = useMedia('(prefers-reduced-motion: reduce)')
+// На тач-устройствах облегчаем рендер: меньше пикселей и тень попроще
+const isTouch = useMedia('(pointer: coarse)')
 
 const canvas = ref(null)
 const ready = ref(false)
@@ -23,7 +22,10 @@ async function mount3D() {
   try {
     const { createCupScene } = await import('../three/cupScene.js')
     if (!canvas.value) return
-    scene = await createCupScene(canvas.value, { reducedMotion: reducedMotion.value })
+    scene = await createCupScene(canvas.value, {
+      reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      lowPower: window.matchMedia('(pointer: coarse)').matches,
+    })
     unsubscribe = scene.onProgress((p) => (progress.value = p))
     ready.value = true
   } catch (err) {
@@ -39,7 +41,7 @@ function teardown() {
   ready.value = false
 }
 
-watch([isDesktop, canvas], ([desktop]) => (desktop ? mount3D() : teardown()), { flush: 'post' })
+watch(canvas, (el) => (el ? mount3D() : teardown()), { flush: 'post' })
 onBeforeUnmount(teardown)
 
 function togglePlant() {
@@ -49,7 +51,8 @@ function togglePlant() {
 
 const stages = ['букет', 'стаканчик в землю', 'росток']
 const stageIndex = computed(() => (progress.value < 0.3 ? 0 : progress.value < 0.7 ? 1 : 2))
-const show3D = computed(() => isDesktop.value && !failed.value)
+const show3D = computed(() => !failed.value)
+const hint = computed(() => (isTouch.value ? 'проведите, чтобы повернуть' : 'потяните, чтобы повернуть'))
 </script>
 
 <template>
@@ -57,7 +60,7 @@ const show3D = computed(() => isDesktop.value && !failed.value)
     <div class="hero__copy">
       <h1 id="hero-title" class="hero__title">Букет, который продолжает жить</h1>
       <p class="hero__lead">
-        Цветы стоят в крафтовом стаканчике вместо вазы. Когда букет отцветёт, на дне вас ждёт семечко —
+        Цветы стоят в крафтовом стаканчике вместо вазы. Когда букет отцветёт, на дне вас ждёт семечко -
         его можно посадить прямо в этот стаканчик.
       </p>
       <div class="hero__actions">
@@ -80,11 +83,11 @@ const show3D = computed(() => isDesktop.value && !failed.value)
           class="stage__canvas"
           tabindex="0"
           role="img"
-          aria-label="Трёхмерный стаканчик с букетом. Потяните мышью или нажмите стрелки, чтобы повернуть."
+          aria-label="Трёхмерный стаканчик с букетом. Потяните или нажмите стрелки, чтобы повернуть."
         ></canvas>
 
         <p class="stage__hint hand" aria-hidden="true">
-          потяните, чтобы повернуть
+          {{ hint }}
           <svg viewBox="0 0 60 40" class="stage__hint-arrow">
             <path d="M4 6 C 22 4, 44 12, 50 32" />
             <path d="M42 28 L50 33 L53 23" />
@@ -279,8 +282,39 @@ const show3D = computed(() => isDesktop.value && !failed.value)
   }
 
   .stage {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 3 / 4;
     max-height: none;
+  }
+}
+
+@media (max-width: 40rem) {
+  .stage__hint {
+    top: var(--space-sm);
+    left: var(--space-md);
+    font-size: var(--text-base);
+  }
+
+  .stage__hint-arrow {
+    display: none;
+  }
+
+  .stage__controls {
+    left: var(--space-md);
+    right: var(--space-md);
+    bottom: var(--space-md);
+    gap: var(--space-xs);
+  }
+
+  .stage__steps {
+    gap: var(--space-2xs);
+  }
+
+  .stage__steps li {
+    gap: var(--space-2xs);
+  }
+
+  .stage__steps li + li::before {
+    width: 0.75rem;
   }
 }
 </style>

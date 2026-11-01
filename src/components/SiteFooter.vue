@@ -4,14 +4,9 @@ import { site } from '../data/site.js'
 import { useOrder } from '../composables/useOrder.js'
 import { formatPrice } from '../data/catalog.js'
 
-const { bouquet, seed, summary } = useOrder()
+const { bouquet, seed, orderText, telegramUrl } = useOrder()
 const copyState = ref('default') // default | success | error
 
-const orderText = computed(() => `Здравствуйте! Хочу заказать: ${summary.value}.`)
-const telegramUrl = computed(() => {
-  const base = `https://t.me/${site.telegram}`
-  return bouquet.value ? `${base}?text=${encodeURIComponent(orderText.value)}` : base
-})
 const phoneHref = computed(() => `tel:${site.phone.replace(/[^+\d]/g, '')}`)
 
 async function copyOrder() {
@@ -49,12 +44,12 @@ const year = new Date().getFullYear()
               Заказать в Telegram <span class="arrow">→</span>
             </a>
             <button class="foot__copy" type="button" :data-state="copyState" @click="copyOrder">
-              {{ copyState === 'success' ? 'Скопировано' : copyState === 'error' ? 'Не вышло — скопируйте вручную' : 'Скопировать заказ' }}
+              {{ copyState === 'success' ? 'Скопировано' : copyState === 'error' ? 'Не вышло - скопируйте вручную' : 'Скопировать заказ' }}
             </button>
           </div>
         </div>
         <p v-else class="foot__invite">
-          Соберём букет к нужному часу. Напишите, какие цветы и какое семечко хотите, — ответим и посчитаем.
+          Напишите в Telegram, какой букет и какое семечко хотите, - ответим и посчитаем.
         </p>
 
         <dl class="contacts">

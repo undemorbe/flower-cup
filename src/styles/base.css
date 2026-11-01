@@ -109,7 +109,7 @@ button {
   font-variant-numeric: tabular-nums lining-nums;
 }
 
-/* ——— buttons: 8 states ——— */
+/* --- buttons: 8 states --- */
 .btn {
   --btn-bg: var(--color-forest);
   --btn-fg: var(--color-on-forest);
