@@ -1,0 +1,202 @@
+/* Общая сетка страниц букета и семечка */
+.detail {
+  padding-block: var(--space-lg) var(--space-3xl);
+}
+
+.crumb {
+  display: inline-flex;
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-lg);
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.crumb:hover {
+  color: var(--color-ink);
+}
+
+.detail__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: var(--space-2xl);
+  align-items: start;
+}
+
+.detail__art {
+  margin: 0;
+  position: sticky;
+  top: 5.5rem;
+  display: grid;
+  place-items: end center;
+  aspect-ratio: 1 / 1.05;
+  padding: var(--space-xl) var(--space-xl) 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-linen);
+  overflow: hidden;
+}
+
+.detail__art svg {
+  width: 100%;
+  max-width: 30rem;
+  height: auto;
+}
+
+.detail__art--packet {
+  place-items: center;
+  padding: var(--space-xl);
+  background:
+    radial-gradient(90% 70% at 30% 10%, var(--color-peach), transparent 65%),
+    var(--color-paper-2);
+}
+
+.detail__art--packet svg {
+  max-width: 20rem;
+  transform: rotate(-4deg);
+  filter: drop-shadow(0 18px 24px var(--color-shadow));
+}
+
+.detail__info {
+  display: grid;
+  gap: var(--space-xl);
+  padding-top: var(--space-sm);
+}
+
+.detail__title {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.detail__kicker {
+  font-size: var(--text-sm);
+  color: var(--color-accent-ink);
+}
+
+.detail__title h1 {
+  font-size: var(--text-4xl);
+}
+
+.detail__lead {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: 1.4;
+  color: var(--color-ink-muted);
+  max-width: 36ch;
+}
+
+.detail__price {
+  font-size: var(--text-xl);
+  font-weight: 500;
+}
+
+.block {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.block h2 {
+  font-size: var(--text-2xl);
+}
+
+.buy {
+  display: grid;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border: var(--rule-hair);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+}
+
+.buy__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-md);
+  font-size: var(--text-sm);
+}
+
+.buy__done {
+  color: var(--color-ink-muted);
+}
+
+.list-rows > * {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-block: var(--space-xs);
+  border-top: var(--rule-hair);
+}
+
+.list-rows > *:last-child {
+  border-bottom: var(--rule-hair);
+}
+
+.list-rows dt,
+.list-rows dd {
+  margin: 0;
+}
+
+.list-rows dd {
+  text-align: right;
+  color: var(--color-ink-muted);
+}
+
+.steps {
+  counter-reset: step;
+  display: grid;
+  gap: var(--space-md);
+}
+
+.steps li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: var(--space-sm);
+  align-items: baseline;
+  max-width: 52ch;
+}
+
+.steps li::before {
+  content: counter(step);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  line-height: 1;
+  color: var(--color-kraft-deep);
+}
+
+.related {
+  padding-top: var(--space-3xl);
+}
+
+.related__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: var(--rule-ink);
+}
+
+.related__head h2 {
+  font-size: var(--text-3xl);
+}
+
+@media (max-width: 56rem) {
+  .detail__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-xl);
+  }
+
+  .detail__art {
+    position: static;
+    aspect-ratio: 1 / 1;
+    padding: var(--space-md) var(--space-md) 0;
+  }
+
+  .detail__art--packet {
+    padding: var(--space-lg);
+  }
+}

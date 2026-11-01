@@ -1,0 +1,36 @@
+/* Палитра SVG-иллюстраций — только через токены */
+.a-petal { fill: var(--color-petal); stroke: var(--color-rule); stroke-width: 0.5; }
+.a-pollen { fill: var(--color-pollen); }
+.a-pollen-dark { fill: var(--color-kraft-dark); }
+.a-sunflower { fill: var(--color-sunflower); }
+.a-sunflower-back { fill: var(--color-kraft); }
+.a-seedhead { fill: var(--color-seedhead); }
+.a-seedhead-dot { fill: var(--color-kraft-deep); }
+.a-rose { fill: var(--color-rose); stroke: var(--color-rose-deep); stroke-width: 0.6; }
+.a-rose-line { fill: none; stroke: var(--color-rose-deep); stroke-width: 1.2; stroke-linecap: round; }
+.a-cornflower { fill: var(--color-cornflower); }
+.a-cornflower-dark { fill: var(--color-forest-deep); opacity: 0.55; }
+.a-lavender { fill: var(--color-lavender); }
+.a-lagurus { fill: var(--color-lagurus); stroke: var(--color-kraft); stroke-width: 0.6; }
+.a-lagurus-line { fill: none; stroke: var(--color-kraft); stroke-width: 0.8; stroke-linecap: round; }
+.a-tansy { fill: var(--color-tansy); }
+.a-gyps { fill: var(--color-petal); stroke: var(--color-rule); stroke-width: 0.4; }
+.a-eucalyptus { fill: var(--color-sage-soft); }
+.a-leaf { fill: var(--color-leaf); }
+.a-leaf-light { fill: var(--color-sage-soft); }
+.a-leaf-line { fill: none; stroke: var(--color-leaf-dark); stroke-width: 0.9; stroke-linecap: round; }
+.a-nasturtium { fill: var(--color-nasturtium); }
+.a-nasturtium-line { fill: none; stroke: var(--color-accent-ink); stroke-width: 0.8; stroke-linecap: round; }
+.a-stem { fill: none; stroke: var(--color-stem); stroke-width: 2.1; stroke-linecap: round; }
+.a-thin-stem { fill: none; stroke: var(--color-stem); stroke-width: 1.1; stroke-linecap: round; }
+
+.a-kraft { fill: var(--color-kraft); }
+.a-kraft-deep { fill: var(--color-kraft-deep); }
+.a-kraft-shade { fill: var(--color-kraft-dark); opacity: 0.16; }
+.a-fiber { stroke: var(--color-kraft-deep); stroke-width: 0.5; opacity: 0.35; }
+.a-stamp { fill: none; stroke: var(--color-forest); stroke-width: 1; opacity: 0.85; }
+.a-stamp-fill { fill: var(--color-forest); opacity: 0.85; }
+.a-stamp-text { fill: var(--color-forest); font-family: var(--font-hand); font-size: 9px; opacity: 0.9; }
+.a-soil { fill: var(--color-soil); }
+.a-paper { fill: var(--color-paper); }
+.a-ink-line { fill: none; stroke: var(--color-ink); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; }

@@ -1,0 +1,16 @@
+import { createApp } from 'vue'
+import '@fontsource/cormorant-garamond/400.css'
+import '@fontsource/cormorant-garamond/500.css'
+import '@fontsource/cormorant-garamond/600.css'
+import '@fontsource/rubik/400.css'
+import '@fontsource/rubik/500.css'
+import '@fontsource/marck-script/400.css'
+import './styles/tokens.css'
+import './styles/base.css'
+import './styles/art.css'
+import './styles/detail.css'
+import App from './App.vue'
+import { router } from './router.js'
+import { reveal } from './composables/reveal.js'
+
+createApp(App).use(router).directive('reveal', reveal).mount('#app')

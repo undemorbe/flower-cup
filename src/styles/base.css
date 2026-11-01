@@ -1,0 +1,245 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+  min-width: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--color-peach);
+  color: var(--color-ink);
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.hand {
+  font-family: var(--font-hand);
+  font-weight: 400;
+}
+
+.num {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ——— buttons: 8 states ——— */
+.btn {
+  --btn-bg: var(--color-forest);
+  --btn-fg: var(--color-on-forest);
+  --btn-bd: var(--color-forest);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  min-height: 3rem;
+  padding: 0 var(--space-md);
+  border: 1px solid var(--btn-bd);
+  border-radius: var(--radius-pill);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.btn:hover {
+  --btn-bg: var(--color-forest-deep);
+  --btn-bd: var(--color-forest-deep);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn[data-state='loading'] {
+  cursor: progress;
+}
+
+.btn[data-state='success'] {
+  --btn-bg: var(--color-sage);
+  --btn-bd: var(--color-sage);
+}
+
+.btn[data-state='error'] {
+  --btn-bg: var(--color-accent-ink);
+  --btn-bd: var(--color-accent-ink);
+}
+
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-ink);
+  --btn-bd: var(--color-ink);
+}
+
+.btn--ghost:hover {
+  --btn-bg: var(--color-ink);
+  --btn-fg: var(--color-paper);
+  --btn-bd: var(--color-ink);
+}
+
+.btn--light {
+  --btn-bg: var(--color-on-forest);
+  --btn-fg: var(--color-forest-deep);
+  --btn-bd: var(--color-on-forest);
+}
+
+.btn--light:hover {
+  --btn-bg: var(--color-peach);
+  --btn-bd: var(--color-peach);
+}
+
+.btn .arrow {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.btn:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* text link with drawn underline */
+.link {
+  color: inherit;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  padding-bottom: 2px;
+  transition: background-size var(--dur-base) var(--ease-out);
+  white-space: nowrap;
+}
+
+.link:hover {
+  background-size: 0 1px;
+  background-position: 100% 100%;
+}
+
+/* single orchestrated reveal (applied by v-reveal) */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+}
+
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 120ms !important;
+    animation-duration: 120ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .reveal {
+    transform: none;
+  }
+}
