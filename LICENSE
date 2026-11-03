@@ -1,0 +1,81 @@
+Flower Cup - Proprietary License
+
+Copyright (c) 2026 Boris Stankov. All rights reserved.
+
+Flower Cup is a project of Boris Stankov (the "Copyright Holder").
+
+This repository contains the source code, texts, illustrations, design system
+and brand assets of the Flower Cup website (together, the "Software").
+
+The Software is the proprietary property of the Copyright Holder. It is published on
+GitHub only so that the website can be built and hosted. Being able to see the
+source code does not grant you any licence to use it.
+
+Without prior written permission from the Copyright Holder you may not:
+
+  1. copy, modify, merge or create derivative works of the Software, in whole
+     or in part;
+  2. publish, distribute, sublicense, sell or otherwise make the Software
+     available to anyone else;
+  3. use the Software, its texts, illustrations, 3D scene or visual design to
+     build another website, product or service;
+  4. use the name "Flower Cup", its logo or brand identity in a way that could
+     suggest affiliation with or endorsement by Flower Cup or the Copyright
+     Holder.
+
+Viewing the repository and forking it inside GitHub are allowed to the extent
+required by the GitHub Terms of Service. A fork does not grant any of the
+rights listed above.
+
+Third-party components (open-source libraries and fonts) are not covered by
+this licence. They remain under their own licences, listed in
+THIRD_PARTY_NOTICES.md, and those licences take precedence for those parts.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+For permissions and licensing questions: https://t.me/polyvinylchlorid
+
+-------------------------------------------------------------------------------
+
+Flower Cup - проприетарная лицензия
+
+Copyright (c) 2026 Борис Станков (Boris Stankov). Все права защищены.
+
+Flower Cup - проект Бориса Станкова (далее - «Правообладатель»).
+
+Репозиторий содержит исходный код, тексты, иллюстрации, дизайн-систему и
+элементы фирменного стиля сайта Flower Cup (далее - «Программа»).
+
+Программа является собственностью Правообладателя. Она опубликована на GitHub
+только для сборки и размещения сайта. Доступ к исходному коду не даёт права
+его использовать.
+
+Без предварительного письменного разрешения Правообладателя запрещается:
+
+  1. копировать, изменять, объединять Программу или создавать производные
+     работы на её основе - целиком или частично;
+  2. публиковать, распространять, сублицензировать, продавать Программу или
+     иным образом передавать её третьим лицам;
+  3. использовать Программу, её тексты, иллюстрации, 3D-сцену или визуальный
+     дизайн для создания другого сайта, продукта или сервиса;
+  4. использовать название «Flower Cup», логотип и фирменный стиль так, чтобы
+     это создавало впечатление связи с Flower Cup или Правообладателем либо
+     их одобрения.
+
+Просмотр репозитория и создание форка внутри GitHub допускаются в объёме,
+предусмотренном Условиями использования GitHub. Форк не даёт прав,
+перечисленных выше.
+
+Сторонние компоненты (open-source библиотеки и шрифты) на эту лицензию не
+распространяются. Они остаются под своими лицензиями, перечисленными в
+THIRD_PARTY_NOTICES.md, и для этих частей их условия имеют приоритет.
+
+ПРОГРАММА ПРЕДОСТАВЛЯЕТСЯ «КАК ЕСТЬ», БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ. ПРАВООБЛАДАТЕЛЬ
+НЕ НЕСЁТ ОТВЕТСТВЕННОСТИ ЗА ЛЮБЫЕ ПРЕТЕНЗИИ, УБЫТКИ ИЛИ ИНЫЕ ПОСЛЕДСТВИЯ,
+СВЯЗАННЫЕ С ПРОГРАММОЙ ИЛИ ЕЁ ИСПОЛЬЗОВАНИЕМ.
+
+По вопросам разрешений и лицензирования: https://t.me/polyvinylchlorid

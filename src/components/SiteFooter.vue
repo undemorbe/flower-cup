@@ -20,6 +20,7 @@ async function copyOrder() {
 }
 
 const year = new Date().getFullYear()
+const licensesUrl = `${import.meta.env.BASE_URL}third-party-licenses.txt`
 </script>
 
 <template>
@@ -49,7 +50,7 @@ const year = new Date().getFullYear()
           </div>
         </div>
         <p v-else class="foot__invite">
-          Напишите в Telegram, какой букет и какое семечко хотите, - ответим и посчитаем.
+          Напишите в Telegram, какой букет и какое семечко хотите. Ответим и посчитаем.
         </p>
 
         <dl class="contacts">
@@ -72,7 +73,10 @@ const year = new Date().getFullYear()
         </dl>
       </div>
 
-      <p class="foot__base">© {{ year }} Flower Cup</p>
+      <p class="foot__base">
+        <span>© {{ year }} Flower Cup. Все права защищены.</span>
+        <a class="foot__legal" :href="licensesUrl">Сторонние лицензии</a>
+      </p>
     </div>
   </footer>
 </template>
@@ -194,7 +198,21 @@ const year = new Date().getFullYear()
   overflow-wrap: anywhere;
 }
 
+.foot__legal {
+  color: inherit;
+  text-underline-offset: 0.25em;
+  white-space: nowrap;
+}
+
+.foot__legal:hover {
+  color: var(--color-on-forest);
+}
+
 .foot__base {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2xs) var(--space-md);
   grid-column: 1 / -1;
   padding-top: var(--space-md);
   border-top: 1px solid var(--color-forest-rule);
