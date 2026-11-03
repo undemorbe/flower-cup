@@ -11,7 +11,7 @@ const fact = (seed, label) => seed.facts.find((f) => f.label === label)?.value
       <header class="seeds__head">
         <h2 id="seeds-title" v-reveal>Семечки</h2>
         <p v-reveal="80">
-          Конвертик с семенами лежит на дне каждого стаканчика. Выберите, что вырастет у вас, - и добавьте в букет.
+          Конвертик с семенами лежит на дне каждого стаканчика. Выберите, что вырастет у вас, и добавьте в букет.
         </p>
         <p class="seeds__note hand" aria-hidden="true">или доверьтесь флористу</p>
       </header>
