@@ -1,5 +1,5 @@
 <script setup>
-import { reviews } from '../data/reviews.js'
+import { reviews, reviewsNote } from '../data/reviews.js'
 import { findBouquet, findSeed } from '../data/catalog.js'
 
 const items = reviews.map((r) => ({
@@ -12,7 +12,10 @@ const items = reviews.map((r) => ({
 <template>
   <section v-if="items.length" id="reviews" class="reviews" aria-labelledby="reviews-title">
     <div class="wrap">
-      <h2 id="reviews-title" v-reveal class="reviews__title">Отзывы</h2>
+      <header class="reviews__head">
+        <h2 id="reviews-title" v-reveal class="reviews__title">Отзывы</h2>
+        <p v-if="reviewsNote" v-reveal="80" class="reviews__note">{{ reviewsNote }}</p>
+      </header>
       <ul class="reviews__list">
         <li v-for="(r, i) in items" :key="r.name + i" v-reveal="(i % 3) * 80" class="review">
           <blockquote class="review__text">
@@ -41,10 +44,20 @@ const items = reviews.map((r) => ({
   padding-block: var(--space-3xl) 0;
 }
 
+.reviews__head {
+  display: grid;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+}
+
 .reviews__title {
   font-size: var(--text-4xl);
   font-weight: 400;
-  margin-bottom: var(--space-xl);
+}
+
+.reviews__note {
+  max-width: 40ch;
+  color: var(--color-ink-muted);
 }
 
 .reviews__list {
