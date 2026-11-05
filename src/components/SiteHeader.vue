@@ -9,6 +9,7 @@ const sections = [
   { hash: '#cups', label: 'О стаканчиках' },
   { hash: '#bouquets', label: 'Букеты' },
   { hash: '#seeds', label: 'Семечки' },
+  { hash: '#faq', label: 'Вопросы' },
   { hash: '#contacts', label: 'Контакты' },
 ]
 
