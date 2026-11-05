@@ -136,10 +136,9 @@ const hint = computed(() => (isTouch.value ? 'проведите, чтобы п�
 }
 
 .hero__lead {
-  max-width: 34ch;
-  font-family: var(--font-display);
-  font-size: var(--text-lg);
-  line-height: 1.4;
+  max-width: 40ch;
+  font-size: var(--text-md);
+  line-height: 1.55;
   color: var(--color-ink-muted);
 }
 
