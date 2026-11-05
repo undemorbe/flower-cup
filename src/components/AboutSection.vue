@@ -45,6 +45,10 @@ const points = [
 .mark {
   position: relative;
   white-space: nowrap;
+  font-family: var(--font-hand);
+  font-weight: 400;
+  font-size: 1.1em;
+  letter-spacing: 0;
   color: var(--color-accent-ink);
 }
 
