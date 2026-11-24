@@ -1,15 +1,22 @@
 <script setup>
 import BouquetCard from './BouquetCard.vue'
-import { bouquets } from '../data/catalog.js'
+import { useCatalog } from '../content/store.js'
+
+// asPage - отдельная страница «Букеты» (заголовок h1), иначе - блок на главной со ссылкой
+defineProps({ asPage: { type: Boolean, default: false } })
+const { bouquets } = useCatalog()
 
 const variantFor = (i) => (i === 0 ? 'feature' : i === 3 ? 'wide' : 'default')
 </script>
 
 <template>
-  <section id="bouquets" class="bouquets wrap" aria-labelledby="bouquets-title">
+  <section class="bouquets wrap" :class="{ 'bouquets--page': asPage }" aria-labelledby="bouquets-title">
     <header class="bouquets__head">
-      <h2 id="bouquets-title" v-reveal>Наши букеты</h2>
-      <p v-reveal="80">Каждый - в стаканчике с семечком на дне. Какое семечко положить, выбираете вы.</p>
+      <component :is="asPage ? 'h1' : 'h2'" id="bouquets-title" v-reveal>Наши букеты</component>
+      <p v-reveal="80">
+        Каждый - в стаканчике с семечком на дне. Какое семечко положить, выбираете вы.
+        <RouterLink v-if="!asPage" class="link" :to="{ name: 'bouquets' }">Все букеты</RouterLink>
+      </p>
     </header>
 
     <ul class="bouquets__grid">
@@ -34,6 +41,11 @@ const variantFor = (i) => (i === 0 ? 'feature' : i === 3 ? 'wide' : 'default')
   margin-bottom: var(--space-xl);
 }
 
+.bouquets--page {
+  padding-top: var(--space-xl);
+}
+
+.bouquets__head h1,
 .bouquets__head h2 {
   font-size: var(--text-display);
   font-weight: 400;

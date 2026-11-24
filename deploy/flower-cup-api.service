@@ -1,0 +1,37 @@
+# systemd-юнит бэкенда. Установка:
+#   sudo useradd --system --home /opt/flower-cup --shell /usr/sbin/nologin flowercup
+#   sudo git clone https://github.com/undemorbe/flower-cup.git /opt/flower-cup   (зависимости бэкенду не нужны)
+#   sudo install -d -o flowercup -g flowercup -m 700 /var/lib/flower-cup
+#   sudo install -o root -g flowercup -m 640 server/.env /etc/flower-cup.env   (DATA_DIR=/var/lib/flower-cup, TRUST_PROXY=1)
+#   sudo cp deploy/flower-cup-api.service /etc/systemd/system/ && sudo systemctl enable --now flower-cup-api
+[Unit]
+Description=Flower Cup API
+After=network.target
+
+[Service]
+Type=simple
+User=flowercup
+Group=flowercup
+WorkingDirectory=/opt/flower-cup
+EnvironmentFile=/etc/flower-cup.env
+ExecStart=/usr/bin/node server/index.js
+Restart=on-failure
+RestartSec=3
+
+# Песочница: процесс видит систему только на чтение, писать может лишь в каталог данных
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+ReadWritePaths=/var/lib/flower-cup
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

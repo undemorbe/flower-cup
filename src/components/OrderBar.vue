@@ -2,7 +2,7 @@
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useOrder } from '../composables/useOrder.js'
-import { formatPrice } from '../data/catalog.js'
+import { formatPrice } from '../../shared/format.js'
 
 const { state, bouquet, seed, telegramUrl } = useOrder()
 const footerVisible = ref(false)
@@ -29,11 +29,11 @@ function restore() {
 onMounted(() => {
   io = new IntersectionObserver((entries) => {
     for (const e of entries) {
-      if (e.target.id === 'contacts') footerVisible.value = e.isIntersecting
+      if (e.target.id === 'site-footer') footerVisible.value = e.isIntersecting
       else heroVisible.value = e.isIntersecting
     }
   })
-  const footer = document.getElementById('contacts')
+  const footer = document.getElementById('site-footer')
   if (footer) io.observe(footer)
   watch(
     () => route.name,
@@ -76,7 +76,7 @@ onBeforeUnmount(() => {
 .bar {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--space-md) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--tabbar-h, 0px) + var(--space-md) + env(safe-area-inset-bottom, 0px));
   z-index: 25;
   display: flex;
   align-items: center;

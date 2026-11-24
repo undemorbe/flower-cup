@@ -1,18 +1,29 @@
 <script setup>
+import { computed } from 'vue'
 import SeedPacket from './art/SeedPacket.vue'
-import { seeds } from '../data/catalog.js'
+import { useCatalog } from '../content/store.js'
+import { sproutLabel } from '../../shared/format.js'
 
-const fact = (seed, label) => seed.facts.find((f) => f.label === label)?.value
+// asPage - отдельная страница «Растения»; limit - сколько показать на главной
+const props = defineProps({
+  asPage: { type: Boolean, default: false },
+  limit: { type: Number, default: 0 },
+})
+const { plants } = useCatalog()
+const list = computed(() => (props.limit ? plants.value.slice(0, props.limit) : plants.value))
 </script>
 
 <template>
-  <section id="seeds" class="seeds" aria-labelledby="seeds-title">
+  <section class="seeds" :class="{ 'seeds--page': asPage }" aria-labelledby="seeds-title">
     <div class="wrap seeds__inner">
       <header class="seeds__head">
-        <h2 id="seeds-title" v-reveal>Семечки</h2>
+        <component :is="asPage ? 'h1' : 'h2'" id="seeds-title" v-reveal>{{ asPage ? 'Растения' : 'Семечки' }}</component>
         <p v-reveal="80">
           Конвертик с семенами лежит на дне каждого стаканчика. Выберите, что вырастет у вас, и добавьте в букет.
         </p>
+        <RouterLink v-if="limit && plants.length > limit" class="link" :to="{ name: 'plants' }">
+          Все растения ({{ plants.length }})
+        </RouterLink>
         <p class="seeds__note hand" aria-hidden="true">или доверьтесь флористу</p>
       </header>
 
@@ -23,15 +34,15 @@ const fact = (seed, label) => seed.facts.find((f) => f.label === label)?.value
           <span>Всходы</span>
           <span>Где расти</span>
         </li>
-        <li v-for="s in seeds" :key="s.slug" v-reveal>
-          <RouterLink class="row" :to="{ name: 'seed', params: { slug: s.slug } }">
-            <SeedPacket class="row__packet" :plant="s.plant" :label="`Пакетик семян: ${s.name}`" />
+        <li v-for="s in list" :key="s.slug" v-reveal>
+          <RouterLink class="row" :to="{ name: 'plant', params: { slug: s.slug } }">
+            <SeedPacket class="row__packet" :plant="s.art" :label="`Пакетик семян: ${s.name}`" />
             <span class="row__name">
               {{ s.name }}
               <em>{{ s.latin }}</em>
             </span>
-            <span class="row__fact num"><span class="row__label">Всходы </span>{{ fact(s, 'Всходы') }}</span>
-            <span class="row__fact"><span class="row__label">Где </span>{{ fact(s, 'Где расти') }}</span>
+            <span class="row__fact num"><span class="row__label">Всходы </span>{{ sproutLabel(s) }}</span>
+            <span class="row__fact"><span class="row__label">Где </span>{{ s.where }}</span>
             <span class="row__go" aria-hidden="true">→</span>
           </RouterLink>
         </li>
@@ -60,6 +71,12 @@ const fact = (seed, label) => seed.facts.find((f) => f.label === label)?.value
   gap: var(--space-md);
 }
 
+.seeds--page {
+  background: var(--color-paper);
+  padding-top: var(--space-xl);
+}
+
+.seeds__head h1,
 .seeds__head h2 {
   font-size: var(--text-4xl);
   font-weight: 400;

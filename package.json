@@ -25,23 +25,30 @@
   "author": "Boris Stankov",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/spa-fallback.mjs && node scripts/third-party-licenses.mjs",
-    "preview": "vite preview"
+    "build": "vite build && node scripts/prerender.mjs && node scripts/third-party-licenses.mjs",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "server": "node server/index.js",
+    "server:dev": "node --watch server/index.js",
+    "admin:hash": "node server/hash-password.js"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",
     "@fontsource/marck-script": "^5.3.0",
     "@fontsource/rubik": "^5.3.0",
+    "qrcode-generator": "^2.0.4",
     "three": "^0.187.0",
     "vue": "^3.5.44",
     "vue-router": "^5.4.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.10",
-    "vite": "^8.3.5"
+    "vite": "^8.3.5",
+    "vitest": "^5.1.0"
   }
 }

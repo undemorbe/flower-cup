@@ -11,6 +11,7 @@
 | [Vue](https://github.com/vuejs/core) | 3.5 | MIT | Copyright (c) 2018-present, Yuxi (Evan) You |
 | [Vue Router](https://github.com/vuejs/router) | 5.4 | MIT | Copyright (c) 2019-present Eduardo San Martin Morote |
 | [three.js](https://github.com/mrdoob/three.js) | 0.187 | MIT | Copyright (c) 2010-2026 three.js authors |
+| [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) | 2.0.4 | MIT | Copyright (c) 2009 Kazuhiko Arase |
 
 Лицензия MIT разрешает коммерческое использование при условии, что уведомление об авторских правах передаётся вместе с кодом. Минификатор вырезает комментарии из бандла, поэтому при сборке тексты лицензий всех зависимостей из `dependencies` собираются в файл `/third-party-licenses.txt` рядом с сайтом (скрипт `scripts/third-party-licenses.mjs`).
 

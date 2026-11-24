@@ -1,34 +1,40 @@
 <script setup>
-import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useOrder } from '../composables/useOrder.js'
+import { useCatalog } from '../content/store.js'
+import { menuOpen as open, useBack } from '../composables/useNav.js'
+import { head } from '../seo/head.js'
 
-const sections = [
-  { hash: '#top', label: 'Главная' },
-  { hash: '#about', label: 'О нас' },
-  { hash: '#cups', label: 'О стаканчиках' },
-  { hash: '#bouquets', label: 'Букеты' },
-  { hash: '#seeds', label: 'Семечки' },
-  { hash: '#faq', label: 'Вопросы' },
-  { hash: '#contacts', label: 'Контакты' },
-]
+const route = useRoute()
+const { bouquet } = useOrder()
+const { menuPages, site } = useCatalog()
+const goBack = useBack()
 
-const open = ref(false)
+// Меню: постоянные разделы + разделы из админки
+const sections = computed(() => [
+  { to: { name: 'home' }, label: 'Главная' },
+  { to: { name: 'bouquets' }, label: 'Букеты' },
+  { to: { name: 'plants' }, label: 'Растения' },
+  ...menuPages.value.map((p) => ({ to: { name: 'page', params: { slug: p.slug } }, label: p.menuLabel })),
+  { to: { name: 'faq' }, label: 'Вопросы' },
+  { to: { name: 'reviews' }, label: 'Отзывы' },
+  { to: { name: 'contacts' }, label: 'Контакты' },
+])
+
+const isHome = computed(() => route.name === 'home')
+const title = computed(() => head.current?.heading ?? head.current?.title ?? route.meta.title ?? '')
+
 const scrolled = ref(false)
 const trigger = ref(null)
 const firstLink = ref(null)
-const route = useRoute()
-const { bouquet } = useOrder()
-
-const target = (hash) => (hash === '#contacts' ? { hash } : { name: 'home', hash })
 
 watch(open, async (value) => {
   document.documentElement.style.overflow = value ? 'hidden' : ''
   await nextTick()
   if (value) firstLink.value?.[0]?.$el?.focus()
-  else trigger.value?.focus()
+  else trigger.value?.focus({ preventScroll: true })
 })
-watch(() => route.fullPath, () => (open.value = false))
 
 const onKey = (e) => e.key === 'Escape' && open.value && (open.value = false)
 const onScroll = () => (scrolled.value = window.scrollY > 8)
@@ -44,11 +50,17 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <header class="head" :class="{ 'is-scrolled': scrolled && !open, 'is-open': open }">
+  <header class="head" :class="{ 'is-scrolled': scrolled && !open, 'is-open': open, 'is-inner': !isHome }">
     <div class="wrap head__row">
-      <RouterLink class="wordmark" :to="{ name: 'home', hash: '#top' }">Flower Cup</RouterLink>
+      <div class="head__start">
+        <button v-if="!isHome && !open" class="head__back" type="button" aria-label="Назад" @click="goBack">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+        </button>
+        <RouterLink class="wordmark" :to="{ name: 'home' }">{{ site.name }}</RouterLink>
+        <span v-if="!isHome && !open" class="head__title" aria-hidden="true">{{ title }}</span>
+      </div>
       <div class="head__end">
-        <RouterLink v-if="bouquet" class="head__order" :to="{ hash: '#contacts' }">
+        <RouterLink v-if="bouquet" class="head__order" :to="{ name: 'contacts' }">
           <span class="head__dot" aria-hidden="true"></span>
           <span>В заказе: {{ bouquet.name }}</span>
         </RouterLink>
@@ -71,14 +83,14 @@ onBeforeUnmount(() => {
     <nav v-if="open" id="site-index" class="sheet" aria-label="Разделы сайта">
       <div class="wrap sheet__inner">
         <ol class="sheet__list">
-          <li v-for="(s, i) in sections" :key="s.hash" :style="{ '--i': i }">
-            <RouterLink ref="firstLink" :to="target(s.hash)" @click="open = false">
+          <li v-for="(s, i) in sections" :key="s.label" :style="{ '--i': i }">
+            <RouterLink ref="firstLink" :to="s.to" @click="open = false">
               <span class="sheet__n num">{{ i + 1 }}</span>
               <span class="sheet__label">{{ s.label }}</span>
             </RouterLink>
           </li>
         </ol>
-        <p class="sheet__note hand">букет, который продолжает жить</p>
+        <p class="sheet__note hand">{{ site.tagline.toLowerCase() }}</p>
       </div>
     </nav>
   </Transition>
@@ -123,6 +135,52 @@ onBeforeUnmount(() => {
   letter-spacing: -0.01em;
   text-decoration: none;
   white-space: nowrap;
+}
+
+.head__start {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+
+.head__back {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-left: calc(var(--space-2xs) * -1);
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.head__back:hover {
+  background: var(--color-paper-2);
+}
+
+.head__back svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.head__title {
+  display: none;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
 }
 
 .head__end {
@@ -218,7 +276,7 @@ onBeforeUnmount(() => {
   background: var(--color-forest);
   color: var(--color-on-forest);
   padding-top: calc(5.5rem + env(safe-area-inset-top, 0px));
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: calc(var(--tabbar-h, 0px) + env(safe-area-inset-bottom, 0px));
 }
 
 .sheet__inner {
@@ -290,6 +348,41 @@ onBeforeUnmount(() => {
 @media (max-width: 40rem) {
   .head__order span:last-child {
     display: none;
+  }
+}
+
+/* Мобильная версия внутренних страниц: «назад» + название страницы, как в приложении */
+@media (max-width: 47.99rem) {
+  .head__row {
+    min-height: 3.5rem;
+  }
+
+  .is-inner .wordmark {
+    display: none;
+  }
+
+  .is-inner.is-open .wordmark {
+    display: inline;
+  }
+
+  .is-inner .head__title {
+    display: block;
+  }
+
+  .head__menu {
+    display: none;
+  }
+
+  .head.is-open .head__menu {
+    display: inline-flex;
+  }
+
+  .sheet {
+    padding-top: calc(4.5rem + env(safe-area-inset-top, 0px));
+  }
+
+  .sheet__label {
+    font-size: var(--text-3xl);
   }
 }
 </style>
