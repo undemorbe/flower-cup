@@ -1,13 +1,17 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { site } from '../data/site.js'
 import { useOrder } from '../composables/useOrder.js'
-import { formatPrice } from '../data/catalog.js'
+import { useCatalog } from '../content/store.js'
+import { formatPrice } from '../../shared/format.js'
 
+// asPage - та же карточка, но как содержимое страницы «Контакты» (с h1)
+const props = defineProps({ asPage: { type: Boolean, default: false } })
+
+const { site } = useCatalog()
 const { bouquet, seed, orderText, telegramUrl } = useOrder()
 const copyState = ref('default') // default | success | error
 
-const phoneHref = computed(() => `tel:${site.phone.replace(/[^+\d]/g, '')}`)
+const phoneHref = computed(() => `tel:${site.value.phone.replace(/[^+\d]/g, '')}`)
 
 async function copyOrder() {
   try {
@@ -24,15 +28,21 @@ const licensesUrl = `${import.meta.env.BASE_URL}third-party-licenses.txt`
 </script>
 
 <template>
-  <footer id="contacts" class="foot" aria-labelledby="contacts-title">
+  <component
+    :is="props.asPage ? 'section' : 'footer'"
+    :id="props.asPage ? undefined : 'site-footer'"
+    class="foot"
+    :class="{ 'foot--page': props.asPage }"
+    aria-labelledby="contacts-title"
+  >
     <div class="wrap foot__inner">
       <div class="foot__mast">
-        <p class="foot__word">Flower Cup</p>
+        <p class="foot__word">{{ site.name }}</p>
         <p class="foot__tag hand">{{ site.tagline.toLowerCase() }}</p>
       </div>
 
       <div class="foot__body">
-        <h2 id="contacts-title">Контакты</h2>
+        <component :is="props.asPage ? 'h1' : 'h2'" id="contacts-title">Контакты</component>
 
         <div v-if="bouquet" class="order">
           <p class="order__label">Ваш стаканчик</p>
@@ -68,17 +78,17 @@ const licensesUrl = `${import.meta.env.BASE_URL}third-party-licenses.txt`
           </div>
           <div>
             <dt>Доставка</dt>
-            <dd>{{ site.city }}</dd>
+            <dd>{{ site.delivery }}</dd>
           </div>
         </dl>
       </div>
 
       <p class="foot__base">
-        <span>© {{ year }} Flower Cup. Все права защищены.</span>
+        <span>© {{ year }} {{ site.name }}. Все права защищены.</span>
         <a class="foot__legal" :href="licensesUrl">Сторонние лицензии</a>
       </p>
     </div>
-  </footer>
+  </component>
 </template>
 
 <style scoped>
@@ -114,8 +124,13 @@ const licensesUrl = `${import.meta.env.BASE_URL}third-party-licenses.txt`
   align-content: start;
 }
 
-.foot__body h2 {
+.foot__body h2,
+.foot__body h1 {
   font-size: var(--text-2xl);
+}
+
+.foot--page {
+  min-height: calc(100svh - 4.25rem - var(--tabbar-h));
 }
 
 .foot__invite {

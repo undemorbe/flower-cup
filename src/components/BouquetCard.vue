@@ -1,6 +1,6 @@
 <script setup>
 import BouquetArt from './art/BouquetArt.vue'
-import { formatPrice } from '../data/catalog.js'
+import { formatPrice } from '../../shared/format.js'
 
 defineProps({
   bouquet: { type: Object, required: true },

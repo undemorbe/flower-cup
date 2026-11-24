@@ -2,7 +2,7 @@
 import { ref, computed, watch, onBeforeUnmount } from 'vue'
 import BouquetArt from './art/BouquetArt.vue'
 import { useMedia } from '../composables/useMedia.js'
-import { findBouquet } from '../data/catalog.js'
+import { useCatalog } from '../content/store.js'
 
 // На тач-устройствах облегчаем рендер: меньше пикселей и тень попроще
 const isTouch = useMedia('(pointer: coarse)')
@@ -15,7 +15,9 @@ const progress = ref(0)
 let scene = null
 let unsubscribe = null
 
-const poster = findBouquet('podsolnuh').art
+const { findBouquet, bouquets, findPage } = useCatalog()
+const poster = computed(() => (findBouquet('podsolnuh') ?? bouquets.value[0])?.art ?? [])
+const howTo = computed(() => (findPage('cups') ? { name: 'page', params: { slug: 'cups' } } : { name: 'faq' }))
 
 async function mount3D() {
   if (scene || !canvas.value) return
@@ -64,8 +66,8 @@ const hint = computed(() => (isTouch.value ? 'проведите, чтобы п�
         его можно посадить прямо в этот стаканчик.
       </p>
       <div class="hero__actions">
-        <RouterLink class="btn" :to="{ hash: '#bouquets' }">Выбрать букет <span class="arrow">→</span></RouterLink>
-        <RouterLink class="link" :to="{ hash: '#cups' }">Как это работает</RouterLink>
+        <RouterLink class="btn" :to="{ name: 'bouquets' }">Выбрать букет <span class="arrow">→</span></RouterLink>
+        <RouterLink class="link" :to="howTo">Как это работает</RouterLink>
       </div>
     </div>
 

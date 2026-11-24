@@ -1,17 +1,25 @@
 import { reactive, watch, computed } from 'vue'
-import { findBouquet, findSeed, formatPrice } from '../data/catalog.js'
-import { telegramLink } from '../data/site.js'
+import { SLUG } from '../../shared/schema.js'
+import { formatPrice, telegramLink } from '../../shared/format.js'
+import { useCatalog, state as contentState } from '../content/store.js'
 
 const KEY = 'flowercup:order'
 
-// localStorage может подменить кто угодно - принимаем только известные слаги
+// localStorage может подменить кто угодно: берём только строки-слаги.
+// Есть ли такой букет, решает каталог (он может прийти из API позже).
+export function parseOrder(raw) {
+  try {
+    const data = JSON.parse(raw)
+    const ok = (v) => (typeof v === 'string' && SLUG.test(v) && v.length <= 60 ? v : null)
+    return { bouquet: ok(data?.bouquet), seed: ok(data?.seed) }
+  } catch {
+    return { bouquet: null, seed: null }
+  }
+}
+
 function load() {
   try {
-    const raw = JSON.parse(localStorage.getItem(KEY))
-    return {
-      bouquet: findBouquet(raw?.bouquet) ? raw.bouquet : null,
-      seed: findSeed(raw?.seed) ? raw.seed : null,
-    }
+    return parseOrder(localStorage.getItem(KEY))
   } catch {
     return { bouquet: null, seed: null }
   }
@@ -28,22 +36,20 @@ watch(state, (value) => {
   }
 })
 
+export function orderMessage(bouquet, seed) {
+  if (!bouquet) return ''
+  const parts = [`Букет «${bouquet.name}»`]
+  if (seed) parts.push(`семечко: ${seed.name.toLowerCase()}`)
+  return `Здравствуйте! Хочу заказать: ${parts.join(', ')} (${formatPrice(bouquet.price)}).`
+}
+
 export function useOrder() {
+  const { findBouquet, findPlant } = useCatalog()
   const bouquet = computed(() => (state.bouquet ? findBouquet(state.bouquet) : null))
-  const seed = computed(() => (state.seed ? findSeed(state.seed) : null))
+  const seed = computed(() => (state.seed ? findPlant(state.seed) : null))
 
-  const summary = computed(() => {
-    if (!bouquet.value) return ''
-    const parts = [`Букет «${bouquet.value.name}»`]
-    if (seed.value) parts.push(`семечко: ${seed.value.name.toLowerCase()}`)
-    return parts.join(', ')
-  })
-
-  // Ссылка в Telegram с готовым текстом заказа
-  const orderText = computed(() =>
-    bouquet.value ? `Здравствуйте! Хочу заказать: ${summary.value} (${formatPrice(bouquet.value.price)}).` : '',
-  )
-  const telegramUrl = computed(() => telegramLink(orderText.value))
+  const orderText = computed(() => orderMessage(bouquet.value, seed.value))
+  const telegramUrl = computed(() => telegramLink(contentState.content.site.telegram, orderText.value))
 
   return {
     state,
@@ -51,7 +57,6 @@ export function useOrder() {
     telegramUrl,
     bouquet,
     seed,
-    summary,
     setBouquet: (slug) => (state.bouquet = slug),
     setSeed: (slug) => (state.seed = slug),
     clear: () => {

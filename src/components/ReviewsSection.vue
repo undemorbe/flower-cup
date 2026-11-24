@@ -1,20 +1,31 @@
 <script setup>
-import { reviews, reviewsNote } from '../data/reviews.js'
-import { findBouquet, findSeed } from '../data/catalog.js'
+import { computed } from 'vue'
+import { useCatalog } from '../content/store.js'
 
-const items = reviews.map((r) => ({
-  ...r,
-  bouquet: r.bouquet ? findBouquet(r.bouquet) : null,
-  seed: r.seed ? findSeed(r.seed) : null,
-}))
+const props = defineProps({
+  asPage: { type: Boolean, default: false },
+  limit: { type: Number, default: 0 },
+})
+const { reviews, site, findBouquet, findPlant } = useCatalog()
+const reviewsNote = computed(() => site.value.reviewsNote)
+
+const items = computed(() =>
+  (props.limit ? reviews.value.slice(0, props.limit) : reviews.value).map((r) => ({
+    ...r,
+    bouquet: r.bouquet ? findBouquet(r.bouquet) : null,
+    seed: r.plant ? findPlant(r.plant) : null,
+  })),
+)
 </script>
 
 <template>
-  <section v-if="items.length" id="reviews" class="reviews" aria-labelledby="reviews-title">
+  <section v-if="items.length || asPage" class="reviews" aria-labelledby="reviews-title">
     <div class="wrap">
       <header class="reviews__head">
-        <h2 id="reviews-title" v-reveal class="reviews__title">Отзывы</h2>
+        <component :is="asPage ? 'h1' : 'h2'" id="reviews-title" v-reveal class="reviews__title">Отзывы</component>
         <p v-if="reviewsNote" v-reveal="80" class="reviews__note">{{ reviewsNote }}</p>
+        <p v-if="!items.length" class="reviews__note">Отзывов пока нет.</p>
+        <RouterLink v-if="limit && reviews.length > limit" class="link" :to="{ name: 'reviews' }">Все отзывы</RouterLink>
       </header>
       <ul class="reviews__list">
         <li v-for="(r, i) in items" :key="r.name + i" v-reveal="(i % 3) * 80" class="review">
@@ -28,7 +39,7 @@ const items = reviews.map((r) => ({
                 {{ r.bouquet.name }}
               </RouterLink>
               <template v-if="r.bouquet && r.seed"> + </template>
-              <RouterLink v-if="r.seed" class="link" :to="{ name: 'seed', params: { slug: r.seed.slug } }">
+              <RouterLink v-if="r.seed" class="link" :to="{ name: 'plant', params: { slug: r.seed.slug } }">
                 {{ r.bouquet ? r.seed.name.toLowerCase() : r.seed.name }}
               </RouterLink>
             </span>

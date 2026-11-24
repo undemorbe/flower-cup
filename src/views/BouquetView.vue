@@ -1,18 +1,19 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
 import BouquetArt from '../components/art/BouquetArt.vue'
 import BouquetCard from '../components/BouquetCard.vue'
 import ChipGroup from '../components/ChipGroup.vue'
-import { bouquets, seeds, bouquetCare, findBouquet, formatPrice } from '../data/catalog.js'
+import Missing from '../components/Missing.vue'
+import { useCatalog } from '../content/store.js'
+import { formatPrice } from '../../shared/format.js'
 import { useOrder } from '../composables/useOrder.js'
+import { useSeo, ld } from '../seo/head.js'
 
 const props = defineProps({ slug: { type: String, required: true } })
-const router = useRouter()
 const order = useOrder()
+const { bouquets, plants, site, findBouquet } = useCatalog()
 
 const bouquet = computed(() => findBouquet(props.slug))
-watch(bouquet, (b) => !b && router.replace({ name: 'home', hash: '#bouquets' }), { immediate: true })
 
 const chosenSeed = ref(null)
 watch(
@@ -25,7 +26,7 @@ watch(
 )
 
 const seedOptions = computed(() =>
-  seeds.map((s) => ({ value: s.slug, label: s.name, hint: s.slug === bouquet.value?.seed ? 'к букету' : '' })),
+  plants.value.map((s) => ({ value: s.slug, label: s.name, hint: s.slug === bouquet.value?.seed ? 'к букету' : '' })),
 )
 
 const inOrder = computed(
@@ -37,13 +38,33 @@ function addToOrder() {
   order.setSeed(chosenSeed.value)
 }
 
-const care = computed(() => [...bouquetCare, ...(bouquet.value?.care ?? [])])
-const analogs = computed(() => bouquets.filter((b) => b.slug !== props.slug))
+const care = computed(() => [...site.value.bouquetCare, ...(bouquet.value?.care ?? [])])
+const analogs = computed(() => bouquets.value.filter((b) => b.slug !== props.slug))
+
+useSeo(() => {
+  const b = bouquet.value
+  if (!b) return { title: 'Букет не найден', noindex: true }
+  return {
+    title: `Букет «${b.name}»`,
+    heading: b.name,
+    description: `${b.lead} ${formatPrice(b.price)}. В крафтовом стаканчике с семечком на дне.`,
+    path: `/bouquets/${b.slug}`,
+    type: 'product',
+    jsonLd: [
+      ld.product(b, site.value),
+      ld.breadcrumbs([
+        { name: 'Главная', path: '/' },
+        { name: 'Букеты', path: '/bouquets' },
+        { name: b.name, path: `/bouquets/${b.slug}` },
+      ]),
+    ],
+  }
+})
 </script>
 
 <template>
   <article v-if="bouquet" class="detail wrap">
-    <RouterLink class="crumb" :to="{ name: 'home', hash: '#bouquets' }">← Все букеты</RouterLink>
+    <RouterLink class="crumb" :to="{ name: 'bouquets' }">← Все букеты</RouterLink>
 
     <div class="detail__grid">
       <figure class="detail__art">
@@ -91,16 +112,17 @@ const analogs = computed(() => bouquets.filter((b) => b.slug !== props.slug))
       </div>
     </div>
 
-    <section class="related" aria-labelledby="analogs-title">
+    <section v-if="analogs.length" class="related" aria-labelledby="analogs-title">
       <header class="related__head">
         <h2 id="analogs-title">Аналоги</h2>
-        <RouterLink class="link" :to="{ name: 'home', hash: '#bouquets' }">Все букеты</RouterLink>
+        <RouterLink class="link" :to="{ name: 'bouquets' }">Все букеты</RouterLink>
       </header>
       <ul class="analogs">
         <li v-for="b in analogs" :key="b.slug"><BouquetCard :bouquet="b" /></li>
       </ul>
     </section>
   </article>
+  <Missing v-else what="Такого букета нет" :back="{ name: 'bouquets' }" back-label="Все букеты" />
 </template>
 
 <style scoped>

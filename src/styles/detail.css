@@ -199,3 +199,27 @@
     padding: var(--space-lg);
   }
 }
+
+/* Мобильное приложение: «назад» уже в шапке, картинка - не на весь экран */
+@media (max-width: 47.99rem) {
+  .detail > .crumb {
+    display: none;
+  }
+
+  .detail {
+    padding-top: var(--space-sm);
+  }
+
+  .detail__art {
+    aspect-ratio: 4 / 3;
+  }
+
+  .detail__art svg {
+    max-height: 100%;
+    width: auto;
+  }
+
+  .detail__art--packet svg {
+    max-width: 9rem;
+  }
+}

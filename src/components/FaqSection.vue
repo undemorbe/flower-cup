@@ -1,12 +1,14 @@
 <script setup>
-import { faq } from '../data/faq.js'
-import { site } from '../data/site.js'
+import { useCatalog } from '../content/store.js'
+
+defineProps({ asPage: { type: Boolean, default: false } })
+const { faq, site } = useCatalog()
 </script>
 
 <template>
-  <section id="faq" class="faq wrap" aria-labelledby="faq-title">
+  <section class="faq wrap" aria-labelledby="faq-title">
     <header class="faq__head">
-      <h2 id="faq-title" v-reveal>Вопросы</h2>
+      <component :is="asPage ? 'h1' : 'h2'" id="faq-title" v-reveal>Вопросы</component>
       <p v-reveal="80">
         Не нашли ответ - спросите в
         <a class="link" :href="`https://t.me/${site.telegram}`" target="_blank" rel="noopener">Telegram</a>.
@@ -14,7 +16,7 @@ import { site } from '../data/site.js'
     </header>
 
     <div class="faq__list">
-      <details v-for="item in faq" :key="item.q" v-reveal class="qa" name="faq">
+      <details v-for="item in faq" :key="item.id" v-reveal class="qa" name="faq">
         <summary class="qa__q">
           <span>{{ item.q }}</span>
           <svg class="qa__icon" viewBox="0 0 20 20" aria-hidden="true">
@@ -44,6 +46,7 @@ import { site } from '../data/site.js'
   gap: var(--space-md);
 }
 
+.faq__head h1,
 .faq__head h2 {
   font-size: var(--text-4xl);
   font-weight: 400;

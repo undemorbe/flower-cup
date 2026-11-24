@@ -32,12 +32,24 @@ jobs:
 
       - run: npm audit --omit=dev --audit-level=high
 
+      - name: Tests
+        run: npm test
+
       - name: Build
         run: npm run build
         env:
           # Проектный сайт живёт по адресу https://<user>.github.io/<repo>/
           # Для user-site (<user>.github.io) или своего домена поставьте BASE_PATH: /
           BASE_PATH: /${{ github.event.repository.name }}/
+          # Всё ниже необязательно: без переменных сайт собирается на встроенных (mock) данных.
+          # Settings -> Secrets and variables -> Actions -> Variables:
+          #   API_URL   https://api.example.ru  (бэкенд за nginx, см. deploy/nginx/flower-cup-api.conf)
+          #   SITE_URL  свой домен, если есть (canonical, sitemap)
+          VITE_API_URL: ${{ vars.API_URL }}
+          CONTENT_API_URL: ${{ vars.API_URL }}
+          VITE_SITE_URL: ${{ vars.SITE_URL }}
+          # Secrets: ADMIN_PATH - адрес админки, например /kabinet-7f3k (иначе /studio-fc)
+          VITE_ADMIN_PATH: ${{ secrets.ADMIN_PATH }}
 
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         if: github.event_name != 'pull_request'
